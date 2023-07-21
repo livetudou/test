@@ -1,1 +1,103 @@
 
+<?php
+
+function uploadAndUnzip($file) {
+    $target_dir = __DIR__;
+    $target_file = $target_dir . basename($file["name"]);
+    $dirNameNew= substr(basename($file["name"]), 0, -4);
+    $uploadOk = 1;
+    $zipFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+    // Check if file is a actual zip or fake zip
+    if($zipFileType != "zip") {
+        echo "<br>Sorry, 仅 .ZIP 格式支持.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "<br>Sorry, your file was not uploaded.";
+    // if everything is ok, try to upload file
+    } else {
+        if (move_uploaded_file($file["tmp_name"], $target_file)) {
+            echo "<br>The file ". basename( $file["name"]). " has been uploaded 已上传.";
+        } else {
+            echo "<br>Sorry, 上传过程出现异常 请重试.";
+        }
+    }
+
+    // Unzip the file
+    $zip = new ZipArchive;
+    if ($zip->open($target_file) === TRUE) {
+        $zip->extractTo($target_dir);
+        $zip->close();
+        echo '<br>File 已解压 (目录名 同 ZIP名):'.$target_dir.'\\'.$dirNameNew;
+
+        // Delete the uploaded zip file
+        unlink($target_file);
+        echo '<br>已删除zip file';
+    } else {
+        echo '<br>解压失败 ,请重试 ';
+    }
+
+    // Delete the current PHP file
+    // unlink(__FILE__);
+}
+
+// Call the function
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_FILES['file'])) {
+        uploadAndUnzip($_FILES['file']);
+    }
+}
+
+if($_GET['a']=='del'){
+    // Delete the current PHP file
+    echo '<br删除本页执行<br>';
+    unlink(__FILE__);
+}
+
+function listFolderFiles($dir){
+    $ffs = scandir($dir);
+
+    unset($ffs[array_search('.', $ffs, true)]);
+    unset($ffs[array_search('..', $ffs, true)]);
+
+    if (count($ffs) < 1)
+        return;
+
+    echo '<ul>';
+    foreach($ffs as $ff){
+        echo '<li>'.$ff;
+        if(is_dir($dir.'/'.$ff)) listFolderFiles($dir.'/'.$ff);
+        echo '</li>';
+    }
+    echo '</ul>';
+}
+
+
+
+
+?>
+
+<html>
+<body>
+
+<form action="?a=1" method="post" enctype="multipart/form-data">
+    选择ZIP:
+    <input type="file" name="file" id="file">
+    <input type="submit" value="上传 ZIP" name="submit">
+</form>
+
+<a href='?a=del'>删除本页</a>
+
+<br/><br/>
+
+<?php
+echo "当前目录: " . __DIR__ . "<br/> 当前下级结构：<br/>";
+listFolderFiles(__DIR__);
+
+?>
+</body>
+</html>
+
