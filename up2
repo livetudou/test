@@ -3,7 +3,7 @@
 
 $dateYI = new DateTime();
 $nowTime=$dateYI->format('Y-m-d H:i');
-echo "<br>默认时区:"$nowTime;
+echo "<br>默认时区:".$nowTime;
 
 // 查询当前PHP页面所在服务器环境的时区
 $originalTimeZone = date_default_timezone_get();
@@ -37,7 +37,7 @@ $updateTime="2022-11-11 11:16";//预设置
 $dateYI = new DateTime();
 $dateYI->setTimezone(new DateTimeZone('UTC'));
 $nowTime=$dateYI->format('Y-m-d H:i');
-echo "<br>UTC:"$nowTime;
+echo "<br>UTC:".$nowTime;
 
 //检测URL是否可用 返回真假是否
 function checkUrlWorkOK($url) {
