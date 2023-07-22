@@ -10,12 +10,14 @@ $rootPath = $_SERVER['DOCUMENT_ROOT'];
 $currentDir = dirname($_SERVER['SCRIPT_FILENAME']); 
 $currDirNORTPathONLY = str_replace($rootPath  ,'',$currentDir);
 
+echo "<br>currDirNORTPathONLY: $currDirNORTPathONLY <br>";
+
 $txtFile = $currentDir . '/'.$libFNameBody.'.txt'; //====================================
 $txtFileTMP = $currentDir . '/'.$libFNameBody.'02.txt'; 
 
 $PHPFile = $currentDir . '/'.$libFNameBody.'.php';  
 
-
+echo "<br>txtFile: $txtFile <br>";
 //if (!file_exists($PHPFile)) {
   
     $libContent = file_get_contents($txtFile);
