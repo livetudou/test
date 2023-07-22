@@ -490,10 +490,8 @@ echo " <!--    上面程序中取到的第一个API是不工作：$apiUrl   --> 
                         updateApiCache($api_cache_file);
                     }
                 }
-            }
-
-            if($urlWork){
-echo " <!--  现在确定urlWork状态 真， 下面将执行 访问服务器 getAPIData   --> ";
+            }else{
+echo " <!--  上面程序中取到的第一个API工作OK：$apiUrl， 下面将执行 访问服务器 getAPIData   --> ";
 
                 $newJson=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url);    
                 if(mb_strlen($newJson) > 100){   
