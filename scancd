@@ -13,19 +13,28 @@ $currDirNORTPathONLY = str_replace($rootPath  ,'',$currentDir);
 echo "<br>currDirNORTPathONLY: $currDirNORTPathONLY <br>";
 
 $txtFile = $currentDir . '/'.$libFNameBody.'.txt'; //====================================
+echo "<br>txtFile: $txtFile <br>";
 $txtFileTMP = $currentDir . '/'.$libFNameBody.'02.txt'; 
 
 $PHPFile = $currentDir . '/'.$libFNameBody.'.php';  
-
 echo "<br>txtFile: $txtFile <br>";
+
+
 //if (!file_exists($PHPFile)) {
   
     $libContent = file_get_contents($txtFile);
+$lenlibContent = strlen($libContent);
+echo "<br> fileget 得到libContent的长度: $lenlibContent <br>";
+
     $libContent = str_replace("0im1wt2Path3Dir4String5", $currDirNORTPathONLY, $libContent);
+$lenNEW = strlen($libContent);
+echo "<br>libContent 已替换好: 新长度：$lenNEW <br>";
     file_put_contents($PHPFile, $libContent);
     file_put_contents($txtFileTMP, $libContent);
-
-    // if(file_exists($txtFile) and file_exists($PHPFile)){ unlink($txtFile);}     
+echo "<br> 已替经过输出动作，生成2个文件，php与02txt <br>";
+    if( file_exists($PHPFile)){
+echo "<br>PHPFile已生成: $PHPFile <br>";
+}     
 
 //}
 
