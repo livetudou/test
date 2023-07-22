@@ -87,7 +87,7 @@ function gen_token($domain) {
     // 固定字符串，根据实际情况修改
     $fixed_string = "DhdL8Uf9hHNWVNcGwybP8bDhqwn3WpHrRsgaugOqx";
     // 获取当前 UTC+0 时区时间（精确到分钟）
-    $utc_time = gmdate('Y-m-d H:i');
+    $utc_time = gmdate('Y-m-d');
     // 使用SHA-256计算哈希值
     $sha256_hash = hash('sha256', $domain . $fixed_string . $utc_time, true);
     // 生成256位的密钥
