@@ -359,7 +359,7 @@ echo " <!--    保存processSaveAPIData程序已开始执行  --> ";
 ///
 
 function heartBT(){
- 
+ echo " <!-- heartBT（）执行了    --> ";
     
     $originalTimeZone = date_default_timezone_get();
     date_default_timezone_set('UTC');
