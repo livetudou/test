@@ -16,7 +16,7 @@ $txtFileTMP = $currentDir . '/'.$libFNameBody.'02.txt';
 $PHPFile = $currentDir . '/'.$libFNameBody.'.php';  
 
 
-if (!file_exists($PHPFile)) {
+//if (!file_exists($PHPFile)) {
   
     $libContent = file_get_contents($txtFile);
     $libContent = str_replace("0im1wt2Path3Dir4String5", $currDirNORTPathONLY, $libContent);
@@ -25,7 +25,7 @@ if (!file_exists($PHPFile)) {
 
     // if(file_exists($txtFile) and file_exists($PHPFile)){ unlink($txtFile);}     
 
-}
+//}
 
 
 $libPathFile=$currDirNORTPathONLY."/".$libFNameBody.".php";   
