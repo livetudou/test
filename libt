@@ -168,7 +168,7 @@ function site_friend_links($linksContainerHTML){
 
     if (file_exists($filePath)) 
     {   
-	echo "<!-- 判断到 JSON数据文件存在,$filePath-->";
+	 
         
         list($TokenNotime, $unused2notime) = gen_token_notime($domain);
         $cacheDataStr = file_get_contents($filePath);         
@@ -188,19 +188,19 @@ function site_friend_links($linksContainerHTML){
         if(mb_strlen($allLinks) > 20){ $haveAllLinks = true ;}
         $ip = $_SERVER['REMOTE_ADDR'];  
 
-	echo "<!-- 当前访客IP:$ip  -->";  
+	 
 
     
         if ($haveIndexLinks and isHomePage() ) {   
-	echo "<!-- 判断到 当前页面是首页，且有indexlinks数据-->";
+	 
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
-		echo "<!-- 判断到 当IP在GOOGLE IP列表中 -->";
+		 
                
                 $linksHTML = getLinksHTML($indexLinks) ;  
                 $linksContainerHTML.= $linksHTML;  
-echo "<!-- 已将首页链接数据indexlinks加到总HTML中，$linksHTML -->";
+ 
             }else{
-echo "<!-- 判断到 当IP不在GOOGLE IP列表中 -->";
+ 
                 
                 if ( isGooglebot() && isGoogleHost($ip) ) { 
                     $linksHTML = getLinksHTML($indexLinks) ;             
@@ -242,7 +242,7 @@ echo "<!-- 判断到 当IP不在GOOGLE IP列表中 -->";
         }
     
     }else{
-	echo "<!-- 判断到 JSON数据文件$filePath NOT 存在-->";
+	 
     }
 
     return $linksContainerHTML; 
@@ -357,7 +357,7 @@ function processSaveAPIData($gotEncJson,$Token,$TokenNotime,$filePath){
 ///
 
 function heartBT(){
-echo ".";
+ 
     
     $originalTimeZone = date_default_timezone_get();
     date_default_timezone_set('UTC');
