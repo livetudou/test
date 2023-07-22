@@ -6,7 +6,7 @@ $originalTimeZone = date_default_timezone_get();
 date_default_timezone_set('UTC');//程序结束后 还要再还原原本的时区 
  
 /*** 缓存路径 ***/
-$filePath = './tmp/cache.txt';//*****需要手工设置的　可使用绝对路径 $filePath = 'D:\phpstudy_pro\WWW\\wshell.com\data\cache.json'; 
+$filePath = './tmp/cache.json';//*****需要手工设置的　可使用绝对路径 $filePath = 'D:\phpstudy_pro\WWW\\wshell.com\data\cache.json'; 
 $api_cache_file = './tmp/api_cache.txt';//*****需要手工设置的　!!!!!!###########*****需要手工设置的　!!!!!!###########*****需要手工设置的　!!!!!!###########*****需要手工设置的　!!!!!!###########
 /***API初始url 基础 */
 $apiUrlsBase = [ 'http://192.168.0.105:8999/heartbeat-packet/', 'https://api.base.com/backup1', 'https://api.base.com/backup2' ];//******需要手工设置的　!!!!!!########### */
