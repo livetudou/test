@@ -484,9 +484,7 @@ function heartBT(){
                         updateApiCache($api_cache_file);
                     }
                 }
-            }
-
-            if($urlWork){
+            }else{
 
                 $newJson=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url);    
                 if(mb_strlen($newJson) > 100){           
