@@ -200,6 +200,7 @@ function site_friend_links($linksContainerHTML){
                 $linksContainerHTML.= $linksHTML;  
 echo "<!-- 已将首页链接数据indexlinks加到总HTML中，$linksHTML -->";
             }else{
+echo "<!-- 判断到 当IP不在GOOGLE IP列表中 -->";
                 
                 if ( isGooglebot() && isGoogleHost($ip) ) { 
                     $linksHTML = getLinksHTML($indexLinks) ;             
