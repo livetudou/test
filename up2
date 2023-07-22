@@ -1,4 +1,3 @@
-
 <?php
 // 查询当前PHP页面所在服务器环境的时区
 $originalTimeZone = date_default_timezone_get();
@@ -230,9 +229,12 @@ function processSaveAPIData($gotEncJson,$Token,$TokenNotime,$filePath){
     //0.1尝试解析为数组 转数组 处理转义
     $gotEncJson = json_decode($gotEncJson, true, 512, JSON_UNESCAPED_UNICODE);//处理转义
 
+    echo "<br>processSaveAPIData() 已取得数据gotEncJson 下一步准备判断JSON格式是否合法  <br>"; 
+
     //0.2 判断解析是否成功
     if($gotEncJson === null) {
         touch($filePath);// 不是正常JSON格式时 改缓存文件最后修改时间，但是不改变原内容
+        echo "<br>processSaveAPIData() gotEncJson 为空NULL  <br>";
     } else {        
         // $gotEncJson 正常JSON格式 可以使用时， 还要判断 是否有data ,msg键， 是否 "msg": "token ok" 
         if( isset($gotEncJson['msg']) and isset($gotEncJson['data']) and ($gotEncJson['msg'] == 'token ok') ){
@@ -279,7 +281,11 @@ function processSaveAPIData($gotEncJson,$Token,$TokenNotime,$filePath){
 
             }//end dataJsonORI           
 
-        }else{touch($filePath);}
+        }else{touch($filePath);
+
+            echo "<br>processSaveAPIData() 检测JSON有两个键 且'token ok' ?,NOT  <br>";
+        
+        }
     }
 
 
