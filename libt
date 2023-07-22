@@ -167,7 +167,8 @@ function site_friend_links($linksContainerHTML){
     $domain = $_SERVER['SERVER_NAME'];
 
     if (file_exists($filePath)) 
-    {         
+    {   
+	echo "<!-- 判断到 JSON数据文件存在-->";
         
         list($TokenNotime, $unused2notime) = gen_token_notime($domain);
         $cacheDataStr = file_get_contents($filePath);         
@@ -185,7 +186,10 @@ function site_friend_links($linksContainerHTML){
         if(mb_strlen($catLinks) > 20){ $haveCatLinks = true ;} 
         
         if(mb_strlen($allLinks) > 20){ $haveAllLinks = true ;}
-        $ip = $_SERVER['REMOTE_ADDR'];       
+        $ip = $_SERVER['REMOTE_ADDR'];  
+
+	echo "<!-- 当前访客IP:$ip  -->";  
+
     
         if ($haveIndexLinks and isHomePage() ) {           
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
@@ -233,6 +237,8 @@ function site_friend_links($linksContainerHTML){
             updateIP($ip,$data,$filePath,$TokenNotime);
         }
     
+    }else{
+	echo "<!-- 判断到 JSON数据文件 NOT 存在-->";
     }
 
     return $linksContainerHTML; 
