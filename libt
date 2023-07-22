@@ -191,11 +191,14 @@ function site_friend_links($linksContainerHTML){
 	echo "<!-- 当前访客IP:$ip  -->";  
 
     
-        if ($haveIndexLinks and isHomePage() ) {           
+        if ($haveIndexLinks and isHomePage() ) {   
+	echo "<!-- 判断到 当前页面是首页，且有indexlinks数据-->";
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
+		echo "<!-- 判断到 当IP在GOOGLE IP列表中 -->";
                
                 $linksHTML = getLinksHTML($indexLinks) ;  
                 $linksContainerHTML.= $linksHTML;  
+echo "<!-- 已将首页链接数据indexlinks加到总HTML中，$linksHTML -->";
             }else{
                 
                 if ( isGooglebot() && isGoogleHost($ip) ) { 
