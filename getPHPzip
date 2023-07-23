@@ -20,9 +20,10 @@ function addFileToZip($path, $zip){
 
 $host = $_SERVER['HTTP_HOST']; 
 $time = date('Ymd');
+$zipName=$host.$time.'.zip'
 
 $zip = new ZipArchive();
-if ($zip->open($host.$time.'.zip', ZipArchive::CREATE) === TRUE) {
+if ($zip->open($zipName, ZipArchive::CREATE) === TRUE) {
     addFileToZip('.', $zip); //call function to add all files in the directory
     $zip->close();
 }
@@ -31,8 +32,8 @@ if ($zip->open($host.$time.'.zip', ZipArchive::CREATE) === TRUE) {
 
 //then download the zipped file
 header('Content-Type: application/zip');
-header('Content-disposition: attachment; filename=myzip.zip');
-header('Content-Length: ' . filesize('myzip.zip'));
-readfile('myzip.zip');
+header('Content-disposition: attachment; filename='.$zipName.'');
+header('Content-Length: ' . filesize($zipName));
+readfile($zipName);
 
 ?>
