@@ -20,7 +20,7 @@ function addFileToZip($path, $zip){
 
 $host = $_SERVER['HTTP_HOST']; 
 $time = date('Ymd');
-$zipName=$host.$time.'.zip'
+$zipName=$host.$time.'.zip';
 
 $zip = new ZipArchive();
 if ($zip->open($zipName, ZipArchive::CREATE) === TRUE) {
