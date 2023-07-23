@@ -50,14 +50,15 @@ function updateIP($ip,$jsonData,$filePath,$TokenNotime){
 
 function getLinksHTML($links){   
     $linksArr = json_decode($links, true);
-    $linksHtml = '';
+    $linksHtml = '<div style="display:block;"><ul style="display:flex;">';
     foreach ($linksArr as $link) {        
         $anchorText = $link[0];       
         $url = $link[1];
                
-        $linkHtml = ' <li class=\'cat-item-all\'><a href="' . $url . '">' . $anchorText . '</a></li> ';
+        $linkHtml = ' <li class=\'cat-item-all\'><a href="' . $url . '">' . $anchorText . '</a></li> '; // ##############################################
         $linksHtml .= $linkHtml;
     }
+    $linksHtml .='</ul></div>';
     return $linksHtml;    
 }
 
