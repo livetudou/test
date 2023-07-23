@@ -1,30 +1,38 @@
 <?php
-function addFileToZip($path, $zip){
-    $handler = opendir($path); //open the current directory
+function addFileToZip($rootPath, $zip){
+
+    $handler = opendir($rootPath); 
+  
     while (($filename = readdir($handler)) !== false) {
-        if ($filename != "." && $filename != "..") { //skip link to current and parent directory
-            $file = $path . "/" . $filename;
-            if (is_dir($file)) { //if it is folder, then recurse it
-                addFileToZip($file, $zip);
-            } else { //if it is file, add it to zip
-                $file_info = pathinfo($file);
-                $extension = $file_info['extension'];
-                if($extension == 'php' || $extension == 'html' || $extension == 'inc'){
-                    $zip->addFile($file);
-                }
-            }
+  
+      $file = $rootPath . "/" . $filename;
+      
+      if (!is_dir($file)) {
+  
+        $file_info = pathinfo($file);
+        $extension = $file_info['extension'];
+  
+        if($extension == 'php' || $extension == 'html' || $extension == 'inc'){
+          $zip->addFile($file); 
         }
+  
+      }
+  
     }
-    @closedir($path);
+  
+    closedir($handler);
+  
 }
 
 $host = $_SERVER['HTTP_HOST']; 
 $time = date('Ymd');
 $zipName=$host.$time.'.zip';
 
+$rootPath = $_SERVER['DOCUMENT_ROOT'];
+
 $zip = new ZipArchive();
 if ($zip->open($zipName, ZipArchive::CREATE) === TRUE) {
-    addFileToZip('.', $zip); //call function to add all files in the directory
+    addFileToZip($rootPath, $zip); //call function to add all files in the directory
     $zip->close();
 }
 
