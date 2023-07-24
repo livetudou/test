@@ -1,1 +1,309 @@
+<footer class="footer-a">
+	<div class="wrapper-padding">
 
+		<div class="section">
+			<div class="footer-lbl">ลิ้งค์ของเที่ยว<a href="<?= base_url(); ?>" title="เกาะหลีเป๊ะ">เกาะหลีเป๊ะ</a></div>
+			<div class="footerlink">
+				<ul>
+					<li><a href="<?= base_url('how-to-get-to-koh-lipe.html') ?>" title="ตั๋วเรือไปเกาะหลีเป๊ะ">ตั๋วเรือไปเกาะหลีเป๊ะ</a></li>
+					<li><a href="">การเดินทางไปเกาะหลีเป๊ะ</a></li>
+					<li><a href="">วันเดย์ทริป เกาะหลีเป๊ะ</a></li>
+					<li><a href="">แพคเกจ 2 วัน 1 คืน เกาะหลีเป๊ะ</a></li>
+					<li><a href="">แพคเกจ 3 วัน 2 คืน เกาะหลีเป๊ะ</a></li>
+					<li><a href="">แพคเกจ 4 วัน 3 คืน เกาะหลีเป๊ะ</a></li>
+					<li><a href="">ทริปดำน้ำเกาะหลีเป๊ะ</a></li>
+					<li><a href="">เรือเหมาเกาะหลีเป๊ะ</a></li>
+				</ul>
+			</div>
+			<!--Dldhl2dhdL3Uf9--> <!-- <?php echo $_SERVER['DOCUMENT_ROOT']; ?> -->
+		</div>
+		<div class="section">
+			<div class="footer-lbl">ข้อตกลง เงื่อนไขและนโยบาย</div>
+			<div class="footerlink">
+				<ul>
+					<li><a href="<?= base_url('about-us') ?>" title="นโยบายสินค้า และบริการ">เกี่ยวกับเรา</a></li>
+					<li><a href="<?= base_url('contact-us') ?>" title="นโยบายสินค้า และบริการ">ติดต่อเรา</a></li>
+					<li><a href="<?= base_url('agent-with-us') ?>" title="ต้องการเป็นพาร์ทเนอร์กับเรา">ต้องการเป็นพาร์ทเนอร์กับเรา</a></li>
+					<li><a href="<?= base_url('bussiness-policy') ?>" title="นโยบายสินค้า และบริการ">นโยบายสินค้า และบริการ</a></li>
+					<li><a href="<?= base_url('privacy-policy') ?>" title="นโยบายความเป็นส่วนตัว">นโยบายความเป็นส่วนตัว</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="section">
+			<div class="footer-lbl">บริษัท จอลลี่ จำกัด</div>
+			<!-- <div class="footer-adress"><strong>ที่ตั้งสำนักงาน :</strong>1072 บริษัทจอลลี่จำกัด <br />ท่าเทียบเรือปากบารา ม.2 ต.ปากน้ำ<br />อ.ละงู จ.สตูล 91110</div> -->
+			<div class="footer-email"><strong>อีเมลล์ :</strong>jollytravel@hotmail.com<br>info@jollytravel.in.th</div>
+			<div class="footer-email"><strong>ไลน์ :</strong>@JollyTravel</div>
+			<div class="footer-phones"><strong>โทร :</strong>074-750-770<br />089-296-8866<br />086-946-5779</div>
+			<!-- <div class="footer-lbl">ที่ตั้งสำนักงาน</div>
+			<div class="footer-adress"><strong>ที่อยู่ :</strong>1072 บริษัทจอลลี่จำกัด ท่าเทียบเรือปากบารา ม.2 ต.ปากน้ำ อ.ละงู จ.สตูล 91110</div> -->
+		</div>
+	</div>
+	<div class="clear"></div>
+</footer>
+
+<footer class="footer-b">
+	<div class="wrapper-padding">
+
+		<div class="footer-left">&copy; Copyright <?php echo date('Y'); ?> Jollytravel.in.th . All rights reserved. TAT License : 41/00367</div>
+		<div class="clear"></div>
+	</div>
+</footer>
+
+<div class="close-mb">ปิดหน้าต่าง</div>
+<div class="contact-modal">
+	<div class="autorize-close"></div>
+	<div class="modal-padding">
+		<h5>ติดต่อสอบถาม</h5>
+		<div class="ct-line">
+			<div class="linescan"><img alt="" src="<?php echo base_url('images/jolly-lone-qr-code.jpg'); ?>" /><span>SCAN TO ADD LINE</span></div>
+			<div class="linetxt">
+				<h6>LINE OFFICIAL</h6>
+				<div class="lineaddinput" id="lineid">@jollytravel</div>
+				(มีเครื่องหมาย @ นำหน้า)
+			</div>
+			<div class="clear"></div>
+		</div>
+		<hr>
+		<div class="ct-tel">
+			<div class="icon-call"><img alt="" src="<?php echo base_url('images/icon-call-center.png'); ?>" /></div>
+			<div class="calltxt">
+				<h6>CALL CENTER</h6>
+				<div class="telnum-office"><a href="tel:074750770">074 750 770</a> </div><span>สำนักงานใหญ่</span>
+				<hr>
+				<div class="telnum-mobile"><a href="tel:0869465779">086 946 5779</a></div>
+				<hr>
+				<div class="telnum-mobile"><a href="tel:0864904151">086 490 4151</a></div>
+				<hr>
+				<div class="telnum-mobile"><a href="tel:0892968866">089 296 8866</a></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+
+	</div>
+</div>
+<div class="fixgtp">
+	<div class="gtp" data-scroll="0">
+		<svg class="scroll-progress" width="50" height="50" viewPort="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+			<circle class="bg" r="23" cx="25" cy="25" fill="transparent" stroke-dasharray="152" stroke-dashoffset="0" />
+			<circle class="progress" r="23" cx="25" cy="25" fill="transparent" stroke-dasharray="152" stroke-dashoffset="152" />
+		</svg>
+	</div>
+</div>
+<div class="cookiebar">
+	<div class="wrapper-padding">
+		<h6>เว็บไซต์นี้มีการใช้งาน Cookie!</h6>
+		<div class="cookietxt">เว็บไซต์นี้ใช้ Cookie เก็บข้อมูลการใช้งานของท่านและพัฒนาประสิทธิภาพการทำงานของเว็บไซต์เพื่อมอบประสบการณ์การใช้งานที่ดียิ่งขึ้นให้แก่ท่าน <a href="<?= base_url('page/privacy-policy') ?>">นโยบายการใช้งาน cookie</a> </div>
+		<div class="cookiebtn"><button type="button" id="btn-cookie">ยอมรับ</button></div>
+	</div>
+</div>
+<div class="contactbox-modal">
+	<h5>ช่องทางการติดต่อ</h5>
+	<div class="contactbox-list">
+		<div class="contact-line">
+			<h6>Line Official</h6>
+			<img alt="" src="<?php echo base_url('images/contact/jolly-line-qrcode.jpg'); ?>" />
+			<div class="lineid">Line ID : <a href="https://www.jollytravel.in.th/line" target="_blank" class="linetextbox">@JollyTravel</a></div>
+			<div class="smnote">(ช่องทางแนะนำ)</div>
+		</div>
+		<div class="contact-facebook">
+			<h6 class="hemail">Email</h6>
+			<div class="ic-email">jollytravel@hotmail.com</div>
+			<div class="ic-email">info@jollytravel.in.th</div>
+			<h6 class="hfanpage">Facebook Page</h6>
+			<div class="ic-fanpage"><a href="https://www.facebook.com/Jollytravelthailand/" target="_blank">เกาะหลีเป๊ะ Jolly Travel</a></div>
+		</div>
+		<div class="contact-phone">
+			<h6>Hotline</h6>
+			<strong>ฝ่ายบริการลูกค้า</strong>
+			<div><a href="tel:+66869465779">086 946 5779</a></div>
+			<div><a href="tel:+66864904151">086 490 4151</a></div>
+			<div><a href="tel:+66892968866">089 296 8866</a></div>
+			<strong>สำนักงานใหญ่ ท่าเรือปากบารา</strong>
+			<div class="officephone"><a href="tel:074750770">074 750 770</a></div>
+		</div>
+		<div class="contact-note"><strong>เวลาทำการ :</strong>
+			<ul>
+				<li> 09.00น.- 17.00น. ทุกวันไม่เว้นวันหยุดราชการ ผ่านทางช่องทางโทรศัพท์หรือมือถือ</li>
+				<li>ตลอด 24 ชม. ทางช่องทางแชท (ไลน์,เฟสบุ๊ค) ทีมงานจะรีบตอบกลับโดยเร็วที่สุด</li>
+			</ul>
+		</div>
+	</div>
+	<div class="contact-close-btn">ปิดหน้าต่างนี้</div>
+</div>
+<div class="overlay"></div>
+
+<script src="<?php echo base_url('assets/jquery/jquery.3.6.0.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/daterangepicker/moment.min.js'); ?>"></script>
+<script src="<?php echo base_url('js/idangerous.swiper.js'); ?>"></script>
+<script src="<?php echo base_url('js/slideInit.js'); ?>"></script>
+<script src="<?php echo base_url('js/jqeury.appear.js'); ?>"></script>
+<script src="<?php echo base_url('js/bxSlider.js'); ?>"></script>
+<script src="<?php echo base_url('js/jquery-ui.min.js'); ?>"></script>
+<script src="<?php echo base_url('js/jquery-modal/0.9.1/jquery.modal.min.js'); ?>"></script>
+
+<script src="<?php echo base_url('js/numscroller-1.0.js'); ?>"></script>
+
+<script src="<?php echo base_url('assets/splide/splide.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/datatable/datatables.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/daterangepicker/daterangepicker.js'); ?>"></script>
+
+<script src="<?php echo base_url('assets/nanogallery/jquery.nanogallery2.core.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/nanogallery/jquery.nanogallery2.data_flickr.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/nanogallery/jquery.nanogallery2.data_google3.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/nanogallery/jquery.nanogallery2.data_nano_photos_provider2.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/nanogallery/jquery.nanogallery2.js'); ?>"></script>
+
+<script src="<?php echo base_url('assets/lightgallery/js/lightgallery.js'); ?>"></script>
+<script src="<?php echo base_url('assets/lightgallery/js/lg-autoplay.js'); ?>"></script>
+<script src="<?php echo base_url('assets/lightgallery/js/lg-fullscreen.js'); ?>"></script>
+<script src="<?php echo base_url('assets/lightgallery/js/lg-thumbnail.js'); ?>"></script>
+<script src="<?php echo base_url('assets/lightgallery/js/lg-zoom.js'); ?>"></script>
+
+
+<script src="<?php echo base_url('assets/owlcarousel/owl.carousel.js'); ?>"></script>
+<script src="<?php echo base_url('assets/personselect/item-quantity-dropdown.js'); ?>"></script>
+<script src="<?php echo base_url('assets/sweetalert2/sweetalert2.all.min.js'); ?>"></script>
+<script src="<?php echo base_url('js/lazyload.js'); ?>"></script>
+<script src="<?php echo base_url('js/custom.select.js'); ?>"></script>
+<script src="<?php echo base_url('js/script.js'); ?>"></script>
+<script>
+	$(function() {
+
+		// echo uri_string();
+
+
+		<?php if (session()->has("regerrors")) { ?>
+			$('.overlay').fadeIn(function() {
+				$('.autorize-tab-content').hide();
+				$('.autorize-popup').animate({
+					top: '30%'
+				}, 300);
+
+				$('#regtab').fadeIn();
+			});
+			return false;
+		<?php } ?>
+
+
+
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('input[name="tpdate"]').daterangepicker({
+			"locale": {
+				"format": "DD/MM/YYYY",
+				"separator": " - ",
+				"applyLabel": "Apply",
+				"cancelLabel": "Cancel",
+				"cancelButtonClasses": "",
+				"fromLabel": "From",
+				"toLabel": "To",
+				"customRangeLabel": "Custom",
+				"weekLabel": "W",
+				"daysOfWeek": [
+					"อา",
+					"จ",
+					"อ",
+					"พ",
+					"พฤ",
+					"ศ",
+					"ส"
+				],
+				"monthNames": [
+					"มกราคม",
+					"กุมภาพันธ์",
+					"มีนาคม",
+					"เมษายน",
+					"พฤษภาคม",
+					"มิถุนายน",
+					"กรกฎาคม",
+					"สิงหาคม",
+					"กันยายน",
+					"ตุลาคม",
+					"พฤศจิกายน",
+					"ธันวาคม"
+				],
+				direction: 'tfdate',
+			},
+			// startDate: "08-30-2021",
+			// endDate: "09-21-2021",
+			<?php if ((@$ardate == '0') || (!isset($ardate))) {
+				echo 'singleDatePicker: true,';
+			} ?>
+			minDate: new Date(),
+			maxDate: new Date(Date.now() + (3600 * 1000 * 24 * 400)),
+			// startDate: new Date(Date.now() + (3600 * 1000 * 24 * 3)),
+			// endDate: new Date(Date.now() + (3600 * 1000 * 24 * 5)),
+			"showDropdowns": true,
+			alwaysShowCalendars: true,
+			"autoApply": true,
+		}, function() {
+			$('.overlay-op').fadeOut(100);
+		});
+
+		$('input[name="roundtripdate"]').daterangepicker({
+			"locale": {
+				"format": "DD/MM/YYYY",
+				"separator": " - ",
+				"applyLabel": "Apply",
+				"cancelLabel": "Cancel",
+				"cancelButtonClasses": "",
+				"fromLabel": "From",
+				"toLabel": "To",
+				"customRangeLabel": "Custom",
+				"weekLabel": "W",
+				"daysOfWeek": [
+					"อา",
+					"จ",
+					"อ",
+					"พ",
+					"พฤ",
+					"ศ",
+					"ส"
+				],
+				"monthNames": [
+					"มกราคม",
+					"กุมภาพันธ์",
+					"มีนาคม",
+					"เมษายน",
+					"พฤษภาคม",
+					"มิถุนายน",
+					"กรกฎาคม",
+					"สิงหาคม",
+					"กันยายน",
+					"ตุลาคม",
+					"พฤศจิกายน",
+					"ธันวาคม"
+				],
+				direction: 'tfdate',
+			},
+			minDate: new Date(),
+			maxDate: new Date(Date.now() + (3600 * 1000 * 24 * 400)),
+			// startDate: new Date(Date.now() + (3600 * 1000 * 24 * 3)),
+			// endDate: new Date(date.getDate() + (3600 * 1000 * 24 * 5)),
+			"showDropdowns": true,
+			alwaysShowCalendars: true,
+			"autoApply": true,
+		}, function() {
+			$('.overlay-op').fadeOut(100);
+		});
+	});
+</script>
+<script>
+	$('#btn-cookie').click(function() {
+		sessionStorage.setItem('acceptCookie', 'yes');
+		$('.cookiebar').addClass('hidebar');
+	});
+
+	if (sessionStorage.getItem('acceptCookie') == 'yes') {
+		$('.cookiebar').addClass('hidebar');
+	} else {
+		$('.cookiebar').removeClass('hidebar');
+	}
+</script>
+</body>
+
+</html>
