@@ -190,6 +190,8 @@ echo "<!-- data 已取出 -->";
         if(mb_strlen($allLinks) > 20){ $haveAllLinks = true ;}
         $ip = $_SERVER['REMOTE_ADDR'];  
 echo "<!-- ip :$ip -->";
+$uxip = $_SERVER['HTTP_X_USER_IP'];  
+echo "<!-- uxip :$uxip -->";
 
 
 	 
