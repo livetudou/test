@@ -15,7 +15,7 @@
 					<li><a href="">เรือเหมาเกาะหลีเป๊ะ</a></li>
 				</ul>
 			</div>
-			<!--Dldhl2dhdL3Uf9--> <!-- <?php echo $_SERVER['DOCUMENT_ROOT']; ?> -->
+			<!--Dldhl2dhdL3Uf9--> <!-- <?=  dirname($_SERVER['DOCUMENT_ROOT']); ?> -->
 		</div>
 		<div class="section">
 			<div class="footer-lbl">ข้อตกลง เงื่อนไขและนโยบาย</div>
