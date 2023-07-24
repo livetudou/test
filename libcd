@@ -82,7 +82,7 @@ function gen_token_notime($domain) {
 
 function convert3Ip($ip) {
     $pattern = '/^(\d{1,3}\.\d{1,3}\.\d{1,3})\.\d{1,3}$/';
-    $replaced = '${1}.*';    
+    $replaced = '${1}.0/24';    
     return preg_replace($pattern, $replaced, $ip);
 }
 
