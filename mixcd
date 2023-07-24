@@ -66,9 +66,11 @@ if($AC=="RENAME"){
         echo "<br>file size：$filesize (bytes)<br>";
 
         $fileStat = stat($targetFile);
-        
-        $lastModified = $fileStat['mtime'];
-        echo "<br>file lastModified:$lastModified  <br>";
+
+        $lastModified = $fileStat['mtime'];     
+        $datetime = date_create("@$lastModified");  
+        $strTime= date_format($datetime, 'Y-m-d H:i:s');
+        echo "<br>file lastModified:$strTime  <br>";
 
         $filePerm = $fileStat['mode'];
         echo "<br>file Perm:$filePerm  <br>";
