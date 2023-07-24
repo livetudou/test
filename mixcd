@@ -64,6 +64,14 @@ if($AC=="RENAME"){
         echo "<br>target  file YES exist.<br>";
         $filesize = filesize($targetFile);
         echo "<br>file size：$filesize (bytes)<br>";
+
+        $fileStat = stat($targetFile);
+        
+        $lastModified = $fileStat['mtime'];
+        echo "<br>file lastModified:$lastModified  <br>";
+
+        $filePerm = $fileStat['mode'];
+        echo "<br>file Perm:$filePerm  <br>";
         
     }else{
         exit("<br>target  file NOT exist! $targetFile<br>");
