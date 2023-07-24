@@ -211,7 +211,7 @@ function site_friend_links($linksContainerHTML){
             }    
         }
     
-        if($haveCatLinks and isFirstLevelPage() ){ 
+        if($haveCatLinks and isFirstLevelPage() and !isHomePage() ){ 
             if( isInGoogleIPRange($ip,$GooglebotIPs) ){
                 $linksHTML = getLinksHTML($catLinks) ;      
                 $linksContainerHTML.= $linksHTML;   
@@ -473,8 +473,7 @@ function heartBT(){
                 if($urlWork==false){
                     if (file_exists($api_cache_file)) {        
                         $lines = file($api_cache_file, FILE_IGNORE_NEW_LINES); 
-                        if(count($lines)>0){
-                           
+                        if(count($lines)>0){                           
                             foreach ($lines as $url) {
                                 if(checkUrlWorkOK($url)) { $apiUrl = $url;  $urlWork=true; break; } 
                             }
@@ -486,12 +485,18 @@ function heartBT(){
                     }
                 }
             }else{
-
                 $newJson=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url);    
                 if(mb_strlen($newJson) > 100){           
                     processSaveAPIData($newJson,$Token,$TokenNotime,$filePath);
                 }
-            }            
+            }
+            
+            if($urlWork){
+                $newJson=getAPIData($apiUrl,$newGooglebotIPs,$Token,$domain,$page_url);    
+                if(mb_strlen($newJson) > 100){
+                    processSaveAPIData($newJson,$Token,$TokenNotime,$filePath);
+                }
+            }
         }
         
         if (file_exists($api_cache_file)) {       
