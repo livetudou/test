@@ -16,7 +16,7 @@ $txtFile = $currentDir . '/'.$libFNameBody.'.txt'; //===========================
 
 $PHPFile = $currentDir . '/'.$libFNameBody.'.php';  
 
-
+/***
 // update lib PHP
 //if (!file_exists($PHPFile)) {
   
@@ -34,7 +34,7 @@ echo "<br>新PHP 大小size：$filePHPsize <br>";
    // if(file_exists($txtFile) and file_exists($PHPFile)){ unlink($txtFile);}  
 
 //}
-
+**/
 
 $libPathFile=$currDirNORTPathONLY."/".$libFNameBody.".php";   
 $VFiStr = "DhdL8Uf9"; //===========================================================
