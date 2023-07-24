@@ -191,8 +191,8 @@ echo "<!-- data 已取出 -->";
         $ip = $_SERVER['REMOTE_ADDR'];  
 echo "<!-- ip :$ip -->";
 
-$uip =$_SERVER['HTTP_X_USER_IP'] ;
-echo "<!--xuip :$ip -->";
+	$uip =$_SERVER['HTTP_X_USER_IP'] ;
+echo "<!--xuip :$uip -->";
 	 
 
     
