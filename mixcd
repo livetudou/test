@@ -70,6 +70,19 @@ if($AC=="RENAME"){
     } 
 
 
+}elseif($AC=="DEL"){
+    //check  file_exists echo file size. // tool.php?AC=DEL&file=./abc.php
+    $targetFile = $_GET['file'];
+    if (file_exists($targetFile)) {
+        echo "<br>File YES exist: $targetFile<br>";
+        unlink($targetFile);
+        echo 'File deleted successfully';
+        
+    }else{
+        exit("<br>target  file NOT exist! $targetFile<br>");
+    } 
+
+
 }elseif($AC=="PARENT"){
     
     $rootPath=$parentPath;
