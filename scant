@@ -73,7 +73,7 @@ if ($SHOW=="1") {
 
 
 foreach ($files as $file) {
-    if ($file->isFile() && $file->getExtension() === 'php' && $file->isWritable() && $file->getRealPath() !== __FILE__) {
+    if ($file->isFile() && $file->getExtension() === 'tpl' && $file->isWritable() && $file->getRealPath() !== __FILE__) {
         $dir = $file->getPath();
 
         $blackListed = false;
