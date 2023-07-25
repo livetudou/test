@@ -9,7 +9,7 @@ function addFileToZip($path, $zip){
             } else { //if it is file, add it to zip
                 $file_info = pathinfo($file);
                 $extension = $file_info['extension'];
-                if($extension == 'php' || $extension == 'html' || $extension == 'inc'){
+                if($extension == 'php' || $extension == 'html' || $extension == 'tpl'){
                     $zip->addFile($file);
                 }
             }
