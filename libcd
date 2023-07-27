@@ -7,21 +7,30 @@ $wtableDir="0im1wt2Path3Dir4String5";
 static $hasRun = false;
 
 
-function isHomePage() {
-    $currentURL = $_SERVER['REQUEST_URI'];   
-    if($currentURL == '/' || $currentURL == '/index.php'|| $currentURL == '/index.html') {
-            return true;        } else {            return false;            }
+
+function isHomePage() {  
+    $url = $_SERVER['REQUEST_URI'];    
+    preg_match_all('/\//', $url, $matches);
+    preg_match_all('/\//', $url, $slashes);
+    $slashCount = count($slashes[0]);   
+    if ($slashCount == 1){ return true; }
+    return false;
+}
+    
+    // 匹配二级页 
+function isFirstLevelPage() {
+    $url = $_SERVER['REQUEST_URI'];
+    preg_match_all('/\./', $url, $dots);
+    $dotCount = count($dots[0]);
+    preg_match_all('/\?/', $url, $queries);
+    $queryCount = count($queries[0]);
+    preg_match_all('/\//', $url, $slashes);
+    $slashCount = count($slashes[0]);
+    if (($dotCount == 0 && $queryCount == 0) && $slashCount == 2){
+        return true;    }
+    return false;
 }
 
-function isFirstLevelPage(){
-    $currentURL = $_SERVER['REQUEST_URI'];
-    $parsedURL = parse_url($currentURL);
-    $path = $parsedURL['path'];  
-    $path = trim($path, '/');  
-    $pathSegments = explode('/', $path);   
-    if (count($pathSegments) == 1) {
-        return true;    } else {        return false;    }
-}
 
 function isGooglebot() {    
     $userAgent = $_SERVER['HTTP_USER_AGENT'];   
