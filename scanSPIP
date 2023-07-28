@@ -62,12 +62,15 @@ if ($SHOW=="1") {
     echo preg_quote($insertCode, '/') ."<br><br>";
 }
 
-///////////////////////////////
+//////==============================
 
 if (is_dir($rootPath . '/ecrire/')) {
     $codeSYSMsg.= 'SPIP-PHP';  
     foreach($files as $file) {
-        if(pathinfo($file, PATHINFO_EXTENSION) == "html" && (strpos($file->getFilename(), 'footer') !== false or strpos($file->getFilename(), '-pied') !== false) && strpos($file->getPath(), 'squelet') !== false) {
+        $currFileName=$file->getFilename();// keywords
+        $keywordsFN = 'foot|pied|bottom|sommaire';//==============================
+        
+        if(pathinfo($file, PATHINFO_EXTENSION) == "html" && ( preg_match("/\b($keywordsFN)\b/i", $currFileName) ) && strpos($file->getPath(), 'squelet') !== false) {
             $phpFiles[] = $file->getRealPath();
         }
     }
@@ -181,9 +184,17 @@ function insertAction($phpFiles,$insertCode,$tagInner){
                     
     
                     $newContent = substr($content, 0, $insertPos) . $insertCode . substr($content, $insertPos);
-                    file_put_contents($phpFile, $newContent);
-                    $inserted[] = $phpFile;
-                    if ($SHOW=="1") { echo $phpFile . "<b>-EMBED-OK-***</b><br>";}
+                    // codeSYSMsg
+                    if (is_writable($phpFile)) {
+                        file_put_contents($phpFile, $newContent);
+                        $inserted[] = $phpFile;
+                        $codeSYSMsg.="-EMBED-OK-***";
+                    } else {                        
+                        $codeSYSMsg.="-NOT_writable-";
+                    }
+                    if ($SHOW=="1") { echo $phpFile . "<b>".$codeSYSMsg."</b><br>";}
+
+                    
                 }
     
                 $i=$i+1; 
