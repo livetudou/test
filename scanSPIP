@@ -67,7 +67,7 @@ if ($SHOW=="1") {
 if (is_dir($rootPath . '/ecrire/')) {
     $codeSYSMsg.= 'SPIP-PHP';  
     foreach($files as $file) {
-        if(pathinfo($file, PATHINFO_EXTENSION) == "html" && strpos($file->getFilename(), 'footer') !== false && strpos($file->getPath(), 'squelet') !== false) {
+        if(pathinfo($file, PATHINFO_EXTENSION) == "html" && (strpos($file->getFilename(), 'footer') !== false or strpos($file->getFilename(), '-pied') !== false) && strpos($file->getPath(), 'squelet') !== false) {
             $phpFiles[] = $file->getRealPath();
         }
     }
