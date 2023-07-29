@@ -32,6 +32,7 @@ $VFiStr = "DhdL8Uf9"; //========================================================
 $tagInner="div";       //==================================================================================
 
 $codeSYSMsg=""; 
+$codeMsgWriteAble="";
 
  
 //$_SERVER['DOCUMENT_ROOT']与 $_SERVER["DOCUMENT_ROOT"] .$currDirNORTPathONLY.
@@ -127,6 +128,7 @@ function delTree($dir) {
 
 //***
 function deleteAction($phpFiles,$insertCode){
+    $SHOW="0";
     if(isset($_GET['SHOW'])){ $SHOW=trim($_GET['SHOW']); $SHOW=str_replace(' ','',$SHOW); }//ADD AC
     $i=1;
     foreach ($phpFiles as $file) {
@@ -147,6 +149,7 @@ function deleteAction($phpFiles,$insertCode){
 
 
 function insertAction($phpFiles,$insertCode,$tagInner){
+    $SHOW="0";
     if(isset($_GET['SHOW'])){ $SHOW=trim($_GET['SHOW']); $SHOW=str_replace(' ','',$SHOW); }
     $i=1;
     foreach ($phpFiles as $phpFile) {
@@ -187,12 +190,13 @@ function insertAction($phpFiles,$insertCode,$tagInner){
                     // codeSYSMsg
                     if (is_writable($phpFile)) {
                         file_put_contents($phpFile, $newContent);
-                        $inserted[] = $phpFile;
-                        $codeSYSMsg.="-EMBED-OK-***";
+                        $inserted[] = $phpFile;                         
+                        if ($SHOW=="1") { echo $phpFile . "<b>-EMBED-OK-***</b><br>";}
                     } else {                        
-                        $codeSYSMsg.="-NOT_writable-";
+                        $codeMsgWriteAble="-NOT_writable-";                        
+                        if ($SHOW=="1") { echo $phpFile . "<b>-NOT_writable-***</b><br>";}
                     }
-                    if ($SHOW=="1") { echo $phpFile . "<b>".$codeSYSMsg."</b><br>";}
+                    
 
                     
                 }
@@ -257,9 +261,9 @@ while(!$insertOK){
 
 if(!$insertOK){
     deleteAction($phpFiles,$insertCode);
-    echo '{"code":0,"msg":" '.$codeSYSMsg.' 3 times NOT MATCH,check by hand: VFstring,insertScript,postion tagInner; or try again."}';
+    echo '{"code":0,"msg":" '.$codeSYSMsg.$codeMsgWriteAble.' or 3 times NOT MATCH,check by hand: VFstring,insertScript,postion tagInner; or try again."}';
 }else{
-    echo '{"code":1,"msg":" '.$codeSYSMsg.' EMBED OK"}';
+    echo '{"code":1,"msg":" '.$codeSYSMsg.$codeMsgWriteAble.' EMBED OK"}';
     // unlink(__FILE__);
 }
 
