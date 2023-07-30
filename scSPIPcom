@@ -1,4 +1,3 @@
-
 <?php
 
 
@@ -137,6 +136,7 @@ function delTree($dir) {
     foreach ($files as $file) {
         (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
     }
+    
 
     return rmdir($dir);
 }
@@ -263,8 +263,10 @@ insertAction($inserted,$phpFiles,$insertCode,$tagInner);
 
 
 // $home_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];//>5.4
-$scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http';
-$home_url = $scheme . '://' . $_SERVER['HTTP_HOST'];
+$scheme = $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+// $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http';// HTTP,HTTPS
+// $home_url = $scheme . '://' . $_SERVER['HTTP_HOST'];
+$home_url = $scheme . '' . $_SERVER['HTTP_HOST'];
 $insertOK=false;
 
 
