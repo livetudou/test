@@ -78,6 +78,7 @@ if (is_dir($rootPath .$spipDirPath. 'ecrire/')) {
     // $filePathPUB = $rootPath .$spipDirPath.'ecrire/public.php';
 
     if (file_exists($filePathPUB)) {
+
         // echo "PUB YES";
         $codeSYSMsg.= ':PUB-YES:'; 
         $tagInner = "echo pipeline"; //echo pipeline('affichage_final'
@@ -168,14 +169,19 @@ function deleteAction($phpFiles,$insertCode){
     // foreach ($phpFiles as $file) { // >5.4
     for ($i = 0; $i < count($phpFiles); $i++) {
         $file = $phpFiles[$i];    
-        $content = file_get_contents($file);      
+        $content = file_get_contents($file);  
+        
+        chmod($file, 0666);
+
         if (strpos($content, $insertCode) !== false) {      
           $content = str_replace($insertCode, '', $content); 
           file_put_contents($file, $content);  
 
           if ($SHOW=="1") { echo "$j ".  $file . " *DEL REBACK ORIGINAL <br>";  }
           $j=$j+1;//+1   
-        }      
+        }   
+        
+        chmod($file, 0644);
     }
     if($j==1){
         if ($SHOW=="1") { echo "DEL ACTION: NO MATCH file/content/VFstring<br>" ; }
@@ -195,7 +201,10 @@ function insertAction($inserted,$phpFiles,$insertCode,$tagInner){
 
         //if phpFile is PUB
         if(strpos($phpFile, "public.php") !== false){
+            chmod($phpFile, 0666);
+
             if(strpos($content, $tagInner) !== false){
+
                 if (strpos($content, $insertCode) !== false) {
                     if ($SHOW=="1") {echo $phpFile . "-PUB Already operated before.\n<br>";}
                 } else {
@@ -215,6 +224,8 @@ function insertAction($inserted,$phpFiles,$insertCode,$tagInner){
             } else {
                 if ($SHOW=="1") { echo $phpFile . "<b>***NOT found tagInner,not found***</b><br>";}
             }//endif strpos($content, $tagInner)
+
+            chmod($phpFile, 0644);
         }else{
             //else : not public.php
             if (preg_match_all('/<\/' . $tagInner . '>/', $content, $matches, PREG_OFFSET_CAPTURE) ) {
@@ -274,7 +285,7 @@ function insertAction($inserted,$phpFiles,$insertCode,$tagInner){
                 
             }//endif preg_match_all
 
-        }//endif strpos "public.php"
+        }//endif strpos "public.php" file is PUB
 
 
 
